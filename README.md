@@ -1,3 +1,6 @@
+# Modifications
+Hardwired the libary to be able to be used with the NEO when running Armbian mainstream.
+
 # WiringNP
 This is a GPIO access library for NanoPi. It is based on the WiringOP for Orange PI which is based on original WiringPi for Raspberry Pi.
 
