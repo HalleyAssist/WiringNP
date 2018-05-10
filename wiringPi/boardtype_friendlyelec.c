@@ -34,6 +34,7 @@ BoardHardwareInfo gAllBoardHardwareInfo[] = {
         // kernel 3.x
 	{"sun8i", 0, NanoPi_M1, "NanoPi-M1", "0(0)"},
 	{"sun8i", 0, NanoPi_NEO, "NanoPi-NEO", "1(0)"},
+	{"sun8i", 0, NanoPi_NEO, "NanoPi-NEO", "-1(-1)"}, //Armbian Debian Jessie
 	{"sun8i", 0, NanoPi_NEO_Air, "NanoPi-NEO-Air", "2(0)"},
 	{"sun8i", 0, NanoPi_M1_Plus, "NanoPi-M1-Plus", "3(0)"},
     {"sun8i", 0, NanoPi_Duo, "NanoPi-Duo", "4(0)"},
@@ -139,7 +140,7 @@ static int getAllwinnerBoardID(char* boardId, int boardIdMaxLen )
 	int ret = -1;
 
 	if (!(f = fopen("/sys/class/sunxi_info/sys_info", "r"))) {
-		LOGE("open /proc/cpuinfo failed.");
+		LOGE("open /sys/class/sunxi_info/sys_info failed.");
 		return -1;
 	}
 
