@@ -22,6 +22,11 @@ typedef struct {
 	char allwinnerBoardID[255];
 } BoardHardwareInfo;
 
+typedef struct {
+	char deviceTreeModel[255];
+	int boardTypeId;
+} BoardHardwareDeviceTreeInfo;
+
 #define S3C6410_COMMON (6410)
 #define S5PV210_COMMON (210)
 #define S5P4412_COMMON (4412)
