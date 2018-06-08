@@ -31,23 +31,22 @@ BoardHardwareInfo gAllBoardHardwareInfo[] = {
 	{"nanopi3", 7, NanoPi_M3, "NanoPi-M3",""},
 
 	//allwinner h3
-        // kernel 3.x
+	// kernel 3.x
 	{"sun8i", 0, NanoPi_M1, "NanoPi-M1", "0(0)"},
 	{"sun8i", 0, NanoPi_NEO, "NanoPi-NEO", "1(0)"},
 	{"sun8i", 0, NanoPi_NEO_Air, "NanoPi-NEO-Air", "2(0)"},
-	{"sun8i", 0, NanoPi_M1_Plus, "NanoPi-M1-Plus", "3(0)"},
-        {"sun8i", 0, NanoPi_Duo, "NanoPi-Duo", "4(0)"},
-        {"sun8i", 0, NanoPi_NEO_Core, "NanoPi-NEO-Core", "5(0)"},
-        {"sun8i", 0, NanoPi_K1, "NanoPi-K1", "6(0)"},
-        // kernel 4.x
+	{"sun8i", 0, NanoPi_M1_Plus, "NanoPi-M1-Plus", "3(0)"},	
+	{"sun8i", 0, NanoPi_Duo, "NanoPi-Duo", "4(0)"},
+	{"sun8i", 0, NanoPi_NEO_Core, "NanoPi-NEO-Core", "5(0)"},
+	{"sun8i", 0, NanoPi_K1, "NanoPi-K1", "6(0)"},
+	// kernel 4.x
 	{"Allwinnersun8iFamily", 0, NanoPi_M1, "NanoPi-M1", "0(0)"},
-        {"Allwinnersun8iFamily", 0, NanoPi_NEO, "NanoPi-NEO", "1(0)"},
-        {"Allwinnersun8iFamily", 0, NanoPi_NEO_Air, "NanoPi-NEO-Air", "2(0)"},
-        {"Allwinnersun8iFamily", 0, NanoPi_M1_Plus, "NanoPi-M1-Plus", "3(0)"},
-        {"Allwinnersun8iFamily", 0, NanoPi_Duo, "NanoPi-Duo", "4(0)"},
-        {"Allwinnersun8iFamily", 0, NanoPi_NEO_Core, "NanoPi-NEO-Core", "5(0)"},
-        {"Allwinnersun8iFamily", 0, NanoPi_K1, "NanoPi-K1", "6(0)"},
-
+	{"Allwinnersun8iFamily", 0, NanoPi_NEO, "NanoPi-NEO", "1(0)"},
+	{"Allwinnersun8iFamily", 0, NanoPi_NEO_Air, "NanoPi-NEO-Air", "2(0)"},
+	{"Allwinnersun8iFamily", 0, NanoPi_M1_Plus, "NanoPi-M1-Plus", "3(0)"},
+	{"Allwinnersun8iFamily", 0, NanoPi_Duo, "NanoPi-Duo", "4(0)"},
+	{"Allwinnersun8iFamily", 0, NanoPi_NEO_Core, "NanoPi-NEO-Core", "5(0)"},
+	{"Allwinnersun8iFamily", 0, NanoPi_K1, "NanoPi-K1", "6(0)"},
 
 	// a64
 	{"sun50iw1p1", 0, NanoPi_A64, "NanoPi-A64", "0"},
@@ -70,6 +69,13 @@ BoardHardwareInfo gAllBoardHardwareInfo[] = {
 	//k2
 	{"Amlogic", 0, NanoPi_K2, "NanoPi-K2", ""},
 };
+
+
+BoardHardwareDeviceTreeInfo gAllBoardHardwareDeviceTreeInfo[] = {
+	{"FriendlyARM NanoPi NEO", NanoPi_NEO }, //Armbian Debian Stretch
+	// todo, please inclule all DeviceTree Models!
+};
+
 
 static int getFieldValueInCpuInfo(char* hardware, int hardwareMaxLen, char* revision, int revisionMaxLen )
 {
@@ -129,6 +135,31 @@ static int getFieldValueInCpuInfo(char* hardware, int hardwareMaxLen, char* revi
 }
 
 
+static int getBoardTypeIdbyDeviceTreeModel()
+{
+	FILE *f;
+	int i;
+	int ret = -1;
+	char line[1024];
+
+	if (!(f = fopen("/proc/device-tree/model", "r"))) {
+		//LOGE("open /proc/device-tree/model failed.\n");
+		return -1;
+	}
+	if(fgets(line, sizeof(line), f)) {
+		//LOGD("Found device tree model: %s\n", line);
+		for (i=0; i<(sizeof(gAllBoardHardwareDeviceTreeInfo)/sizeof(BoardHardwareDeviceTreeInfo)); i++) {
+			if (!strcmp(gAllBoardHardwareDeviceTreeInfo[i].deviceTreeModel, line)) {
+				ret = gAllBoardHardwareDeviceTreeInfo[i].boardTypeId;
+				break;
+			}
+		}
+	}
+	fclose(f);
+	return ret;
+}
+
+
 static int getAllwinnerBoardID(char* boardId, int boardIdMaxLen )
 {
 	int n,i,j;
@@ -138,7 +169,7 @@ static int getAllwinnerBoardID(char* boardId, int boardIdMaxLen )
 	int ret = -1;
 
 	if (!(f = fopen("/sys/class/sunxi_info/sys_info", "r"))) {
-		LOGE("open /sys/class/sunxi_info/sys_info failed.");
+		LOGE("open /sys/class/sunxi_info/sys_info failed.\n");
 		return -1;
 	}
 
@@ -191,12 +222,26 @@ int getBoardType(BoardHardwareInfo** retBoardInfo) {
 		return -1;
 	}
 
+	// new detection via DeviceTree model
+	int boardTypeId = getBoardTypeIdbyDeviceTreeModel();
+	if (boardTypeId > 0) {
+		if (retBoardInfo != 0) {
+			for (i=0; i<(sizeof(gAllBoardHardwareInfo)/sizeof(BoardHardwareInfo)); i++) {
+				if (gAllBoardHardwareInfo[i].boardTypeId==boardTypeId) {
+					*retBoardInfo = &gAllBoardHardwareInfo[i];
+				}
+			}
+		}
+		return  boardTypeId;
+	}
+
+	// classic detection via cpuinfo & sunxi_board_id (old 3.4 Kernel)
 	const char* a64 = "sun50iw1p1";
 	const char* amlogic = "Amlogic";
 	const char* h3 = "sun8i";
 	const char* h5 = "sun50iw2";
 	const char* h3_kernel4 = "Allwinnersun8iFamily";
-        const char* h5_kernel4 = "Allwinnersun50iw2Family";
+	const char* h5_kernel4 = "Allwinnersun50iw2Family";
 
 	//a64 and amlogic, only check hardware
 	if (strncasecmp(hardware, a64, strlen(a64)) == 0 || strncasecmp(hardware, amlogic, strlen(amlogic)) == 0) {
@@ -209,7 +254,7 @@ int getBoardType(BoardHardwareInfo** retBoardInfo) {
 			}
 		}
 		return -1;
-    }
+	}
 
     // h3 and h5, check hardware and boardid
 	if (strncasecmp(hardware, h3, strlen(h3)) == 0 || strncasecmp(hardware, h5, strlen(h5)) == 0
