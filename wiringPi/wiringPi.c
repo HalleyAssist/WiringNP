@@ -262,7 +262,7 @@ int wiringPiReturnCodes = FALSE;
 // sysFds:
 //	Map a file descriptor from the /sys/class/gpio/gpioX/value
 
-#define MAX_PIN_COUNT 74
+#define MAX_PIN_COUNT 204
 
 static int sysFds [MAX_PIN_COUNT] ={
     -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
