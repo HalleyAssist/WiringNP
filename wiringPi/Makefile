@@ -38,6 +38,7 @@ INCLUDE	= -I.
 DEFS	= -D_GNU_SOURCE
 CFLAGS	= $(DEBUG) $(DEFS) -Wformat=2 -Wall -Winline $(INCLUDE) -pipe -fPIC -Wpointer-to-int-cast
 
+LDCONFIG ?= "1"
 LIBS    =
 
 # Should not alter anything below this line
@@ -126,7 +127,7 @@ install:	$(DYNAMIC) install-headers
 	@install -m 0755 libwiringPi.so.$(VERSION)			$(DESTDIR)$(PREFIX)/lib/libwiringPi.so.$(VERSION)
 	@ln -sf $(DESTDIR)$(PREFIX)/lib/libwiringPi.so.$(VERSION)	$(DESTDIR)/lib/libwiringPi.so
 	
-	if [[ $LDCONFIG != "0" ]]; then
+	if [[ $(LDCONFIG) != "0" ]]; then
 		@ldconfig
 	fi
 
@@ -165,7 +166,7 @@ uninstall:
 	@rm -f $(DESTDIR)$(PREFIX)/include/pcf8591.h
 	@rm -f $(DESTDIR)$(PREFIX)/include/sn3218.h
 	@rm -f $(DESTDIR)$(PREFIX)/lib/libwiringPi.*
-	if [[ $LDCONFIG != "0" ]]; then
+	if [[ $(LDCONFIG) != "0" ]]; then
 		@ldconfig
 	fi
 
