@@ -25,8 +25,8 @@ DYN_VERS_MAJ=2
 DYN_VERS_MIN=0
 
 VERSION=$(DYN_VERS_MAJ).$(DYN_VERS_MIN)
-DESTDIR=/usr
-PREFIX=/local
+DESTDIR?=/usr
+PREFIX?=/local
 
 STATIC=libwiringPi.a
 DYNAMIC=libwiringPi.so.$(VERSION)
