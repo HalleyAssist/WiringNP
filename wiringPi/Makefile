@@ -40,6 +40,7 @@ ADDITIONAL_CFLAGS ?=
 CFLAGS	?= $(DEBUG) $(DEFS) -Wformat=2 -Wall -Winline $(INCLUDE) -pipe -fPIC -Wpointer-to-int-cast $(ADDITIONAL_CFLAGS)
 LDCONFIG ?= "1"
 LIBS    =
+LDFLAGS ?= 
 
 # Should not alter anything below this line
 ###############################################################################
@@ -73,7 +74,7 @@ $(STATIC):	$(OBJ)
 
 $(DYNAMIC):	$(OBJ)
 	@echo "[Link (Dynamic)]"
-	@$(CC) -shared -Wl,-soname,libwiringPi.so -o libwiringPi.so.$(VERSION) -lpthread $(OBJ)
+	@$(CC) -shared -Wl,-soname,libwiringPi.so -o libwiringPi.so.$(VERSION) -lpthread $(OBJ) $(LDFLAGS)
 
 .c.o:
 	@echo [Compile] $<
