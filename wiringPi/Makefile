@@ -127,9 +127,9 @@ install:	$(DYNAMIC) install-headers
 	@install -m 0755 libwiringPi.so.$(VERSION)			$(DESTDIR)$(PREFIX)/lib/libwiringPi.so.$(VERSION)
 	@ln -sf $(DESTDIR)$(PREFIX)/lib/libwiringPi.so.$(VERSION)	$(DESTDIR)/lib/libwiringPi.so
 	
-	if [[ $(LDCONFIG) != "0" ]]; then
+	ifeq ($(LDCONFIG), 1)
 		@ldconfig
-	fi
+	endif
 
 .PHONEY:	install-static
 install-static:	$(STATIC) install-headers
@@ -166,9 +166,10 @@ uninstall:
 	@rm -f $(DESTDIR)$(PREFIX)/include/pcf8591.h
 	@rm -f $(DESTDIR)$(PREFIX)/include/sn3218.h
 	@rm -f $(DESTDIR)$(PREFIX)/lib/libwiringPi.*
-	if [[ $(LDCONFIG) != "0" ]]; then
+	
+	ifeq ($(LDCONFIG), 1)
 		@ldconfig
-	fi
+	endif
 
 
 .PHONEY:	depend
