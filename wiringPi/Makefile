@@ -127,9 +127,9 @@ install:	$(DYNAMIC) install-headers
 	@install -m 0755 libwiringPi.so.$(VERSION)			$(DESTDIR)$(PREFIX)/lib/libwiringPi.so.$(VERSION)
 	@ln -sf $(DESTDIR)$(PREFIX)/lib/libwiringPi.so.$(VERSION)	$(DESTDIR)/lib/libwiringPi.so
 	
-	ifeq ($(LDCONFIG), 1)
-		@ldconfig
-	endif
+	@if [ $(LDCONFIG) = "1" ]; then\
+                ldconfig; \
+        fi
 
 .PHONEY:	install-static
 install-static:	$(STATIC) install-headers
@@ -167,9 +167,10 @@ uninstall:
 	@rm -f $(DESTDIR)$(PREFIX)/include/sn3218.h
 	@rm -f $(DESTDIR)$(PREFIX)/lib/libwiringPi.*
 	
-	ifeq ($(LDCONFIG), 1)
-		@ldconfig
-	endif
+	@if [ $(LDCONFIG) = "1" ]; then\
+                ldconfig; \
+        fi
+
 
 
 .PHONEY:	depend
