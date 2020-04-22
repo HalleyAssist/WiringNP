@@ -125,7 +125,10 @@ install:	$(DYNAMIC) install-headers
 	@install -m 0755 -d						$(DESTDIR)$(PREFIX)/lib
 	@install -m 0755 libwiringPi.so.$(VERSION)			$(DESTDIR)$(PREFIX)/lib/libwiringPi.so.$(VERSION)
 	@ln -sf $(DESTDIR)$(PREFIX)/lib/libwiringPi.so.$(VERSION)	$(DESTDIR)/lib/libwiringPi.so
-	@ldconfig
+	
+	if [[ $LDCONFIG != "0" ]]; then
+		@ldconfig
+	fi
 
 .PHONEY:	install-static
 install-static:	$(STATIC) install-headers
