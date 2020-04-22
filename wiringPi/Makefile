@@ -162,7 +162,9 @@ uninstall:
 	@rm -f $(DESTDIR)$(PREFIX)/include/pcf8591.h
 	@rm -f $(DESTDIR)$(PREFIX)/include/sn3218.h
 	@rm -f $(DESTDIR)$(PREFIX)/lib/libwiringPi.*
-	@ldconfig
+	if [[ $LDCONFIG != "0" ]]; then
+		@ldconfig
+	fi
 
 
 .PHONEY:	depend
