@@ -37,7 +37,7 @@ CC	?= gcc
 INCLUDE	?= -I.
 DEFS	?= -D_GNU_SOURCE
 ADDITIONAL_CFLAGS ?= 
-CFLAGS	?= $(DEBUG) $(DEFS) -Wformat=2 -Wall -Winline $(INCLUDE) -pipe -fPIC -Wpointer-to-int-cast $(ADDITIONAL_CFLAGS)
+CFLAGS = $(DEBUG) $(DEFS) -Wformat=2 -Wall -Winline $(INCLUDE) -pipe -fPIC -Wpointer-to-int-cast $(ADDITIONAL_CFLAGS)
 LDCONFIG ?= "1"
 LIBS    =
 LDFLAGS ?= 
