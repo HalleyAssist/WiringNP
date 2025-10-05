@@ -1611,7 +1611,7 @@ void pinMode(int pin, int mode) {
 
   if (pinToGpio == 0 || physToGpio == 0) {
     printf("please call wiringPiSetup first.\n");
-    return -1;
+    return;
   }
 
   // On-board pin
@@ -1738,7 +1738,7 @@ int digitalRead(int pin) {
 
     if (pinToGpio == 0 || physToGpio == 0) {
         printf("please call wiringPiSetup first.\n");
-        return;
+        return -1;
     }
 
     if (pin > 0 && pin < MAX_PIN_COUNT) {
@@ -2063,7 +2063,7 @@ int waitForInterrupt(int pin, int mS) {
 
     if (pinToGpio == 0 || physToGpio == 0) {
         printf("please call wiringPiSetup first.\n");
-        return;
+        return -1;
     }
 
     /**/ if (wiringPiMode == WPI_MODE_PINS)
